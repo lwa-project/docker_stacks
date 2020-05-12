@@ -110,3 +110,6 @@ RUN pip install \
     pip install "astropy<3.2" && \
     pip install aipy && \
     pip install git+https://github.com/lwa-project/lsl.git
+
+# Switch back to lwa to avoid accidental container runs as root
+USER $LSL_UID
