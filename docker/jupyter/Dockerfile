@@ -7,40 +7,41 @@ USER root
 
 # Install all OS dependencies for fully functional notebook server
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -yq --no-install-recommends \
-    build-essential \
-    emacs-nox \
-    vim-tiny \
-    git \
-    inkscape \
-    jed \
-    libsm6 \
-    libxext-dev \
-    libxrender1 \
-    lmodern \
-    netcat \
-    python-dev \
-    # ---- nbconvert dependencies ----
-    texlive-xetex \
-    texlive-fonts-recommended \
-    texlive-generic-recommended \
-    # Optional dependency
-    texlive-fonts-extra \
-    # ----
-    tzdata \
-    unzip \
-    nano \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -yq --no-install-recommends \
+        swig \
+        tcsh \
+        bzip2 \
+        ca-certificates \
+        fonts-liberation \
+        run-one \
+        emacs-nox \
+        inkscape \
+        jed \
+        libsm6 \
+        libxext-dev \
+        libxrender1 \
+        lmodern \
+        netcat \
+        # ---- nbconvert dependencies ----
+        texlive-xetex \
+        texlive-fonts-recommended \
+        texlive-generic-recommended \
+        # Optional dependency
+        texlive-fonts-extra \
+        # ----
+        tzdata \
+        unzip \
+        nano && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Setup work directory for backward-compatibility
 RUN mkdir /home/$LSL_USER/work && \
     fix-permissions /home/$LSL_USER
 
 # Install Tini
-RUN conda install --quiet --yes 'tini=0.18.0' && \
-    conda list tini | grep tini | tr -s ' ' | cut -d ' ' -f 1,2 >> $CONDA_DIR/conda-meta/pinned && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
+RUN pip install tini && \
     fix-permissions /home/$LSL_USER
 
 # Setup Jupyter
@@ -51,15 +52,17 @@ RUN pip install \
         nbformat \
         nbconvert && \
     jupyter notebook --generate-config && \
-    rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
     rm -rf /home/$LSL_USER/.cache/yarn && \
-    fix-permissions $CONDA_DIR && \
     fix-permissions /home/$LSL_USER
 
 EXPOSE 8888
 
 # Configure container startup
-ENTRYPOINT ["tini", "-g", "--"]
+# Add Tini
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 CMD ["start-notebook.sh"]
 
 # Copy local files as late as possible to avoid cache busting

@@ -7,20 +7,29 @@ USER root
 
 # Install all OS dependencies for fully functional notebook server
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -yq --no-install-recommends \
-    firefox \
-    vim \
-    emacs \
-    nano \
-    libxxf86vm1 \
-    fonts-dejavu \
-    fonts-ubuntu \
-    xfonts-base 
+RUN apt-get update && \
+    apt-get install -yq --no-install-recommends \
+        firefox \
+        emacs \
+        nano \
+        fonts-dejavu \
+        fonts-ubuntu \
+        xfonts-base \
+        gettext \
+        libglib2.0-dev \
+        libgtk-3-dev \
+        libwebkitgtk-3.0-dev \
+        libwxgtk3.0-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff5-dev \
+        liblzma-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
     
 # Install wx
-RUN conda install --quiet --yes wxpython && \
+RUN pip install wxpython && \
     rm -rf /home/$LSL_USER/.cache/yarn && \
-    fix-permissions $CONDA_DIR && \
     fix-permissions /home/$LSL_USER
 
 USER $LSL_UID
@@ -29,7 +38,8 @@ USER $LSL_UID
 RUN git clone https://github.com/lwa-project/session_schedules.git
 
 # Setup the extension
-RUN cd $HOME/session_schedules && git checkout new-lsl-api
+RUN cd $HOME/session_schedules && \
+    git checkout new-lsl-api
 
 # Done
 ENTRYPOINT ["/bin/bash", "-i"]
