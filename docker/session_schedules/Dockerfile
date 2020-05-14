@@ -9,24 +9,24 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        firefox \
         emacs \
-        nano \
+        firefox \
         fonts-dejavu \
         fonts-ubuntu \
-        xfonts-base \
         gettext \
         libglib2.0-dev \
         libgtk-3-dev \
-        libwebkitgtk-3.0-dev \
-        libwxgtk3.0-dev \
         libjpeg-dev \
+        liblzma-dev \
         libpng-dev \
         libtiff5-dev \
-        liblzma-dev && \
+        libwebkitgtk-3.0-dev \
+        libwxgtk3.0-dev \
+        nano \
+        xfonts-base && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
+
 # Install wx
 RUN pip install wxpython && \
     rm -rf /home/$LSL_USER/.cache/yarn && \

@@ -9,20 +9,21 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        swig \
-        tcsh \
         bzip2 \
         ca-certificates \
-        fonts-liberation \
-        run-one \
         emacs-nox \
+        fonts-liberation \
         inkscape \
         jed \
         libsm6 \
         libxext-dev \
         libxrender1 \
         lmodern \
+        nano \
         netcat \
+        run-one \
+        swig \
+        tcsh \
         # ---- nbconvert dependencies ----
         texlive-xetex \
         texlive-fonts-recommended \
@@ -31,8 +32,7 @@ RUN apt-get update && \
         texlive-fonts-extra \
         # ----
         tzdata \
-        unzip \
-        nano && \
+        unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

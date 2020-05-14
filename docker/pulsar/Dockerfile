@@ -9,26 +9,32 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        tcsh \
-        automake \
         autoconf \
-        libtool \
-        gfortran \
+        automake \
+        dirmngr \
         g++ \
-        swig \
-        pgplot5 \
+        gfortran \
+        gpg-agent \
         libc6-dev \
-        libgsl-dev \
         libexpat1-dev \
+        libgsl-dev \
+        libtool \
+        pgplot5 \
+        swig \
+        tcsh \
         zlib1g-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
-## Install wx
-#RUN conda install --quiet --yes wxpython && \
-#    rm -rf /home/$LSL_USER/.cache/yarn && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$LSL_USER
+
+# Install CUDA 10.2
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+    bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list' && \
+    apt-get update && \
+    apt-get install -yq --no-install-recommends \
+        cuda-10-2 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+ENV PATH=$PATH:/usr/local/cuda-10.2/bin
 
 # Setup TEMPO
 ENV TEMPO=/home/$LSL_USER/tempo
@@ -59,6 +65,7 @@ RUN cd /home/$LSL_USER && \
     patch -p0 src/backend_common.c < /home/$LSL_USER/backend_common.patch && \
     cd src && make prep && CFLAGS=-I. make && \
     fix-permissions /home/$LSL_USER
+ENV PATH=$PATH:$PRESTO/bin
 
 # Setup EPSIC
 RUN cd /home/$LSL_USER && \
@@ -85,7 +92,7 @@ RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/dspsr/code dspsr && \
     cd dspsr && \
     git checkout c277eba1e05ffa5e03310b13c2a0f0477758cf4f && \
-    ./bootstrap && ./configure --enable-shared && make && make install && \
+    ./bootstrap && ./configure --enable-shared --with-cuda-dir=/usr/local/cuda-10.2 && make && make install && \
     fix-permissions /home/$LSL_USER
 
 # Setup psrfits_utils
@@ -108,4 +115,5 @@ RUN cd $HOME/commissioning && git checkout new-lsl-api && \
     cd $HOME
 
 # Done
+WORKDIR $HOME/pulsar
 ENTRYPOINT ["/bin/bash", "-i"]

@@ -10,23 +10,23 @@ USER root
 ARG DEBIAN_FRONTEND=noniteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        sudo \
         build-essential \
         curl \
-        git\
-        vim \
-        wget \
-        pkg-config \
+        git \
+        libboost-python-dev \
+        libcfitsio-dev \
+        libfftw3-dev \
+        libgdbm-dev \
+        libhdf5-dev \
         locales \
-        software-properties-common \
+        pkg-config \
         python3-dev \
         python3-pip \
         python3-setuptools \
-        libgdbm-dev\ 
-        libfftw3-dev \
-        libcfitsio-dev \
-        libboost-python-dev \
-        libhdf5-dev && \
+        software-properties-common \
+        sudo \
+        vim \
+        wget && \ 
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -74,6 +74,7 @@ RUN pip install \
         numpy \
         matplotlib \
         scipy \
+        h5py \
         pyephem==3.7.6.0 && \
     pip install "astropy<3.2" && \
     pip install aipy && \
