@@ -37,9 +37,5 @@ USER $LSL_UID
 # Download the extension
 RUN git clone https://github.com/lwa-project/session_schedules.git
 
-# Setup the extension
-RUN cd $HOME/session_schedules && \
-    git checkout new-lsl-api
-
 # Done
 ENTRYPOINT ["/bin/bash", "-i"]

@@ -110,8 +110,7 @@ RUN git clone https://github.com/lwa-project/commissioning.git && \
     git clone https://github.com/lwa-project/pulsar.git
 
 # Setup the extensions
-RUN cd $HOME/commissioning && git checkout new-lsl-api && \
-    cd $HOME/pulsar && git checkout new-lsl-api && \
+RUN cd $HOME/pulsar && make && \
     cd $HOME
 
 # Done
