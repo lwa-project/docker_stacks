@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jaycedowell/lsl:session_schedules
+ARG BASE_CONTAINER=jaycedowell/lsl:rawdata
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"
@@ -106,8 +106,7 @@ USER $LSL_UID
 WORKDIR $HOME
 
 # Download the extensions
-RUN git clone https://github.com/lwa-project/commissioning.git && \
-    git clone https://github.com/lwa-project/pulsar.git
+RUN git clone https://github.com/lwa-project/pulsar.git
 
 # Setup the extensions
 RUN cd $HOME/pulsar && make && \
