@@ -1,9 +1,26 @@
+# Ubuntu 18.04 (bionic)
+# https://hub.docker.com/_/ubuntu/?tab=tags&name=bionic
+# OS/ARCH: linux/amd64
+ARG ROOT_CONTAINER=ubuntu:bionic@sha256:c32bd2e76e7688eeb1bb39754fff7cdfc571626fc1abfded4f82a90de79f8d10
+ARG BASE_CONTAINER=$ROOT_CONTAINER
+FROM $BASE_CONTAINER
 FROM ubuntu:bionic
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"
 ARG LSL_USER="lwa"
 ARG LSL_UID="1000"
 ARG LSL_GID="100"
+
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="LWA Software Library - base image" \
+      org.label-schema.description="Image that provides the LWA Software Library Python module" \
+      org.label-schema.url="https://lwa.unm.edu" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/lwa-project/docker_stacks" \
+      org.label-schema.schema-version="1.0"
 
 USER root
 

@@ -3,6 +3,17 @@ FROM $BASE_CONTAINER
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"
 
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="LWA Software Library - single baseline image" \
+      org.label-schema.description="Image for scheduling and working with data from the LWA single baseline interferometer" \
+      org.label-schema.url="https://lwa.unm.edu" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/lwa-project/docker_stacks" \
+      org.label-schema.schema-version="1.0"
+
 USER root
 
 # Install all OS dependencies for fully functional notebook server
