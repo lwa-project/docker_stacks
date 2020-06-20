@@ -1,0 +1,11 @@
+4a5,6
+> from __future__ import print_function
+> 
+51c53
+< print command
+---
+> print(command)
+64c66
+< print command
+---
+> print(command)

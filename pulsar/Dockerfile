@@ -88,11 +88,18 @@ RUN cd /home/$LSL_USER && \
     fix-permissions /home/$LSL_USER
 
 # Setup DSPSR
+COPY backends.list /home/$LSL_USER
+COPY cudalt.patch /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/dspsr/code dspsr && \
     cd dspsr && \
     git checkout c277eba1e05ffa5e03310b13c2a0f0477758cf4f && \
-    ./bootstrap && ./configure --enable-shared --with-cuda-dir=/usr/local/cuda-10.2 && make && make install && \
+    mv /home/$LSL_USER/backends.list . && \
+    patch -p0 config/cudalt.py < /home/$LSL_USER/cudalt.patch && \
+    ./bootstrap && ./configure --enable-shared \
+                               --with-cuda-dir=/usr/local/cuda-10.2 \
+                               --with-cuda-include-dir=/usr/local/cuda-10.2/include \
+                               --with-cuda-lib-dir=/usr/local/cuda-10.2/lib64 && make && make install && \
     fix-permissions /home/$LSL_USER
 
 # Setup psrfits_utils
