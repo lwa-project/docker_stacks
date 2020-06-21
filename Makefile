@@ -1,6 +1,6 @@
 # Setup
 SHELL:=bash
-OWNER:=jaycedowell
+OWNER:=lwaproject
 
 # Images
 ALL_STACKS:=base \
