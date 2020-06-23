@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jaycedowell/lsl:raw_data
+ARG BASE_CONTAINER=lwaproject/lsl:raw_data
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"

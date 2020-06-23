@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jaycedowell/lsl:session_schedules
+ARG BASE_CONTAINER=lwaproject/lsl:session_schedules
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"

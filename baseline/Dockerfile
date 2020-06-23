@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jaycedowell/lsl:base
+ARG BASE_CONTAINER=lwaproject/lsl:base
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"
@@ -20,11 +20,13 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-        perl \
+        evince \
         gfortran \
+        gv \
         libncurses5-dev \
         libx11-dev \
         libxext6 \
+        perl \
         pgplot5 \
         rsync \
         xterm && \
