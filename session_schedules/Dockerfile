@@ -21,6 +21,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
         emacs \
+        gpg-agent \
         firefox \
         fonts-dejavu \
         fonts-ubuntu \
@@ -38,6 +39,16 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Install xpra
+RUN echo "deb https://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list && \
+    curl https://xpra.org/gpg.asc | apt-key add - && \
+    apt-get update && \
+    apt-get install -yq \
+        xpra \
+        xvfb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install wx
 RUN pip install wxpython && \
     rm -rf /home/$LSL_USER/.cache/yarn && \
@@ -45,8 +56,12 @@ RUN pip install wxpython && \
 
 USER $LSL_UID
 
+# Get ready for xpra
+EXPOSE 10000
+
 # Download the extension
 RUN git clone https://github.com/lwa-project/session_schedules.git
 
 # Done
+WORKDIR $HOME/session_schedules
 ENTRYPOINT ["/bin/bash", "-i"]
