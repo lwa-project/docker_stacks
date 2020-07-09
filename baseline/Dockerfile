@@ -65,5 +65,5 @@ RUN wget ftp://ftp.aoc.nrao.edu/pub/software/aips/31DEC20/install.pl && \
     echo "alias aips='aips tv=local:0'" >> $HOME/.bashrc
 
 # Done
-ENTRYPOINT
-CMD ["/bin/bash", "-i"]
+WORKDIR $HOME
+ENTRYPOINT ["/bin/bash", "-i"]
