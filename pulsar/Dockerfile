@@ -88,12 +88,13 @@ RUN cd /home/$LSL_USER && \
 
 # Setup PSRCHIVE
 COPY ac_python_devel.m4 /home/$LSL_USER
+COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/psrchive/code psrchive && \
     cd psrchive && \
-    python-config --cflags && \
     git checkout ca12b4a279f3d4adcca223508116d9d270df8cc6 && \
     mv /home/$LSL_USER/ac_python_devel.m4 config/ && \
+    mv /home/$LSL_USER/python.m4 config/ && \
     ./bootstrap && ./configure --enable-shared --disable-tempo2 --with-psrcat=/home/$LSL_USER/psrcat/ && \
     make && make install && \
     fix-permissions /home/$LSL_USER
@@ -101,12 +102,14 @@ RUN cd /home/$LSL_USER && \
 # Setup DSPSR
 COPY backends.list /home/$LSL_USER
 COPY cudalt.patch /home/$LSL_USER
+COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/dspsr/code dspsr && \
     cd dspsr && \
     git checkout c277eba1e05ffa5e03310b13c2a0f0477758cf4f && \
     mv /home/$LSL_USER/backends.list . && \
-    patch -p0 config/cudalt.py < /home/$LSL_USER/cudalt.patch && \
+    mv /home/$LSL_USER/python.m4 config/ && \
+    patch -p0 config/cudalt.py < /home/$LSL_USER/cudalt.patch && rm -f /home/$LSL_USER/cudalt.patch && \
     ./bootstrap && ./configure --enable-shared \
                                --with-cuda-dir=/usr/local/cuda-10.2 \
                                --with-cuda-include-dir=/usr/local/cuda-10.2/include \
@@ -114,11 +117,16 @@ RUN cd /home/$LSL_USER && \
     fix-permissions /home/$LSL_USER
 
 # Setup psrfits_utils
+COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone https://github.com/lwa-project/psrfits_utils.git && \
     cd psrfits_utils && \
-    ./prepare && ./configure --prefix=$HOME && make && make install && \
+    mv /home/$LSL_USER/python.m4 config/ && \
+    ./prepare && ./configure && make && make install && \
     fix-permissions /home/$LSL_USER
+
+# Update the libraries
+RUN ldconfig
 
 USER $LSL_UID
 WORKDIR $HOME
