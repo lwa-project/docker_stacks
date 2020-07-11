@@ -23,9 +23,11 @@ RUN apt-get update && \
         autoconf \
         automake \
         dirmngr \
+        evince \
         g++ \
         gfortran \
         gpg-agent \
+        gv \
         libc6-dev \
         libexpat1-dev \
         libgsl-dev \

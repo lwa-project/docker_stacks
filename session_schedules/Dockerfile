@@ -26,6 +26,7 @@ RUN apt-get update && \
         fonts-dejavu \
         fonts-ubuntu \
         gettext \
+        less \
         libglib2.0-dev \
         libgtk-3-dev \
         libjpeg-dev \
