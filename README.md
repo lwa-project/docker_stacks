@@ -26,13 +26,20 @@ docker run -it -p 10000:10000 lwaproject/lsl:{image_name}
 Once Docker is running, from inside the container start the xpra server:
 ```
 export DISPLAY=:100
-xpra start --bind-tcp=0.0.0.0:10000 $DISPLAY
+xpra start --bind-tcp=0.0.0.0:10000 --daemon=yes $DISPLAY
 ```
 After xpra starts and moves into the background you need to start the xpra client on your Docker host machine.  To do this run:
 ```
 /path/to/your/xpra attach tcp://localhost:10000/
 ```
 At this point any graphical programs started in the container should appear on your screen.  Once you are finished with the container, simply exit and the xpra client should exit as well.
+
+If you want to access data stored on your Docker host machine you need to specify which directory as part of the `docker run` command.  For example, if you want a graphical interface and to have access to data stored in `/home/you/lwa_data` on your machine you would run:
+```
+docker pull lwaproject/lsl:{image_name}
+docker run -it -p 10000:10000 -v /home/you/lwa_data:/data lwaproject/lsl:{image_name}
+```
+Inside the container your data will be accessable through the `/data` directory.
 
 ## Resources
 - [Long Wavelength Array website](http://lwa.unm.edu)
