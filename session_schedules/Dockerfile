@@ -44,8 +44,9 @@ RUN apt-get update && \
 RUN echo "deb https://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list && \
     curl https://xpra.org/gpg.asc | apt-key add - && \
     apt-get update && \
-    apt-get install -yq \
+    apt-get install -yq --no-install-recommends \
         xpra \
+        xpra-html5 \
         xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
