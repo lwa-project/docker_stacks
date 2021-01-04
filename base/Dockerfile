@@ -93,7 +93,7 @@ RUN pip install \
         scipy \
         h5py \
         pyephem==3.7.6.0 && \
-    pip install "astropy<3.2" && \
+    pip install astropy==4.0.1.post1 && \
     pip install aipy && \
     pip install lsl
 
