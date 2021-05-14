@@ -60,6 +60,7 @@ RUN pip install \
         jupyterlab \
         jupyterhub \
         jupyter_client \
+        jupyter_bokeh \
         nbformat \
         nbconvert && \
     jupyter notebook --generate-config && \
