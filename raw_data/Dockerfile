@@ -19,16 +19,16 @@ RUN ln -s `realpath $VIRTUAL_ENV/bin/python`-config $VIRTUAL_ENV/bin/python-conf
 RUN ln -s /usr/share $VIRTUAL_ENV/share
 RUN ln -s /usr/include $VIRTUAL_ENV/include
 
+# Install bottleneck
+RUN pip install bottleneck && \
+    rm -rf /home/$LSL_USER/.cache/yarn && \
+    fix-permissions /home/$LSL_USER
 
 USER $LSL_UID
 WORKDIR $HOME
 
 # Download the extensions
 RUN git clone https://github.com/lwa-project/commissioning.git
-
-# Setup the extensions
-RUN cd $HOME/commissioning/DRX/HDF5/ && make && \
-    cd $HOME
 
 # Done
 WORKDIR $HOME/commissioning
