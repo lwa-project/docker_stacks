@@ -47,7 +47,7 @@ RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/r
         cuda-11-2 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-ENV PATH=$PATH:/usr/local/cuda-10.2/bin
+ENV PATH=$PATH:/usr/local/cuda-11.2/bin
 
 # Setup TEMPO
 ENV TEMPO=/home/$LSL_USER/tempo
