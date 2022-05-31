@@ -51,11 +51,6 @@ RUN echo "deb https://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install wx
-RUN pip install wxpython && \
-    rm -rf /home/$LSL_USER/.cache/yarn && \
-    fix-permissions /home/$LSL_USER
-
 USER $LSL_UID
 
 # Get ready for xpra
@@ -66,4 +61,5 @@ RUN git clone https://github.com/lwa-project/session_schedules.git
 
 # Done
 WORKDIR $HOME/session_schedules
+RUN pip install -r requirements.txt
 ENTRYPOINT ["/bin/bash", "-i"]

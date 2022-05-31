@@ -19,11 +19,6 @@ RUN ln -s `realpath $VIRTUAL_ENV/bin/python`-config $VIRTUAL_ENV/bin/python-conf
 RUN ln -s /usr/share $VIRTUAL_ENV/share
 RUN ln -s /usr/include $VIRTUAL_ENV/include
 
-# Install bottleneck
-RUN pip install bottleneck && \
-    rm -rf /home/$LSL_USER/.cache/yarn && \
-    fix-permissions /home/$LSL_USER
-
 USER $LSL_UID
 WORKDIR $HOME
 
@@ -32,4 +27,5 @@ RUN git clone https://github.com/lwa-project/commissioning.git
 
 # Done
 WORKDIR $HOME/commissioning
+RUN pip install -r requirements.txt
 ENTRYPOINT ["/bin/bash", "-i"]
