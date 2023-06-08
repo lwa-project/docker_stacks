@@ -102,7 +102,6 @@ RUN cd /home/$LSL_USER && \
 
 # Setup DSPSR
 COPY backends.list /home/$LSL_USER
-COPY cudalt.patch /home/$LSL_USER
 COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/dspsr/code dspsr && \
@@ -110,7 +109,6 @@ RUN cd /home/$LSL_USER && \
     git checkout 6c762e6fc6bc2a1595000f34bcfc0ca0c43e9954 && \
     mv /home/$LSL_USER/backends.list . && \
     mv /home/$LSL_USER/python.m4 config/ && \
-    patch -p0 config/cudalt.py < /home/$LSL_USER/cudalt.patch && rm -f /home/$LSL_USER/cudalt.patch && \
     ./bootstrap && ./configure --enable-shared \
                                --with-cuda-dir=/usr/local/cuda-11.6 \
                                --with-cuda-include-dir=/usr/local/cuda-11.6/include \
