@@ -1,7 +1,7 @@
-# Ubuntu 20.04 (focal)
-# https://hub.docker.com/_/ubuntu/?tab=tags&name=focal
+# Ubuntu 22.04 (jammy)
+# https://hub.docker.com/_/ubuntu/?tab=tags&name=jammy
 # OS/ARCH: linux/amd64
-ARG ROOT_CONTAINER=ubuntu:focal@sha256:b795f8e0caaaacad9859a9a38fe1c78154f8301fdaf0872eaf1520d66d9c0b98
+ARG ROOT_CONTAINER=ubuntu:jammy@sha256:2fdb1cf4995abb74c035e5f520c0f3a46f12b3377a59e86ecca66d8606ad64f9
 ARG BASE_CONTAINER=$ROOT_CONTAINER
 FROM $BASE_CONTAINER
 FROM ubuntu:bionic
