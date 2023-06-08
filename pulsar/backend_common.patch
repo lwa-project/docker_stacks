@@ -1,6 +1,0 @@
-526,527c526,527
-<         rawdata1 = gen_fvect(numsubints * s->spectra_per_subint * s->num_channels);
-<         rawdata2 = gen_fvect(numsubints * s->spectra_per_subint * s->num_channels);
----
->         rawdata1 = gen_fvect((long) numsubints * s->spectra_per_subint * s->num_channels);
->         rawdata2 = gen_fvect((long) numsubints * s->spectra_per_subint * s->num_channels);

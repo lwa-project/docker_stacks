@@ -39,22 +39,22 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install CUDA 11.2
+# Install CUDA 11.6
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
     bash -c 'echo "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list' && \
     apt-get update && \
     apt-get install -yq --no-install-recommends \
-        cuda-11-2 && \
+        cuda-11-6 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-ENV PATH=$PATH:/usr/local/cuda-11.2/bin
+ENV PATH=$PATH:/usr/local/cuda-11.6/bin
 
 # Setup TEMPO
 ENV TEMPO=/home/$LSL_USER/tempo
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/tempo/tempo && \
     cd tempo && \
-    git checkout 6bab1083350eca24745eafed79a55156bdd1e7d5 && \
+    git checkout 61c8011b0477f005dd4f05ad037fae83c51eafb4 && \
     ./prepare && ./configure && make && make install && \
     fix-permissions /home/$LSL_USER
 
@@ -70,12 +70,10 @@ RUN cd /home/$LSL_USER && \
 ENV PRESTO=/home/$LSL_USER/presto
 ENV PGPLOT_DIR=/usr/lib
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PRESTO/lib
-COPY backend_common.patch /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone https://github.com/scottransom/presto.git && \
     cd presto && \
-    git checkout e90b8148f813c151f588f5f94b81b606964b03a8 && \
-    patch -p0 src/backend_common.c < /home/$LSL_USER/backend_common.patch && \
+    git checkout v4.0 && \
     cd src && make prep && CFLAGS=-I. make && \
     fix-permissions /home/$LSL_USER
 ENV PATH=$PATH:$PRESTO/bin
@@ -94,7 +92,7 @@ COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/psrchive/code psrchive && \
     cd psrchive && \
-    git checkout ca12b4a279f3d4adcca223508116d9d270df8cc6 && \
+    git checkout a1709aab0948935dcaf5305c0aefd129cf954f8b && \
     mv /home/$LSL_USER/ac_python_devel.m4 config/ && \
     mv /home/$LSL_USER/python.m4 config/ && \
     ./bootstrap && ./configure --enable-shared --disable-tempo2 --with-psrcat=/home/$LSL_USER/psrcat/ && \
@@ -108,14 +106,14 @@ COPY python.m4 /home/$LSL_USER
 RUN cd /home/$LSL_USER && \
     git clone git://git.code.sf.net/p/dspsr/code dspsr && \
     cd dspsr && \
-    git checkout c277eba1e05ffa5e03310b13c2a0f0477758cf4f && \
+    git checkout 6c762e6fc6bc2a1595000f34bcfc0ca0c43e9954 && \
     mv /home/$LSL_USER/backends.list . && \
     mv /home/$LSL_USER/python.m4 config/ && \
     patch -p0 config/cudalt.py < /home/$LSL_USER/cudalt.patch && rm -f /home/$LSL_USER/cudalt.patch && \
     ./bootstrap && ./configure --enable-shared \
-                               --with-cuda-dir=/usr/local/cuda-10.2 \
-                               --with-cuda-include-dir=/usr/local/cuda-10.2/include \
-                               --with-cuda-lib-dir=/usr/local/cuda-10.2/lib64 && make && make install && \
+                               --with-cuda-dir=/usr/local/cuda-11.6 \
+                               --with-cuda-include-dir=/usr/local/cuda-11.6/include \
+                               --with-cuda-lib-dir=/usr/local/cuda-11.6/lib64 && make && make install && \
     fix-permissions /home/$LSL_USER
 
 # Setup psrfits_utils
