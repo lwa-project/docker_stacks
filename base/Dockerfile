@@ -37,6 +37,7 @@ RUN apt-get update && \
         libhdf5-dev \
         locales \
         pkg-config \
+        python-is-python3 \
         python3-dev \
         python3-pip \
         python3-setuptools \
