@@ -134,6 +134,7 @@ WORKDIR $HOME
 
 # Download the extensions
 RUN git clone https://github.com/lwa-project/pulsar.git
+RUN git clone https://github.com/lwa-project/pulsar_archive_pipeline.git
 
 # Setup the extensions
 RUN cd $HOME/pulsar && make && \
