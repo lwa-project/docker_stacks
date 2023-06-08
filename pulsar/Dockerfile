@@ -75,6 +75,7 @@ RUN cd /home/$LSL_USER && \
     cd presto && \
     git checkout v4.0 && \
     cd src && make prep && CFLAGS=-I. make && \
+    cd $PRESTO && pip install . && \
     fix-permissions /home/$LSL_USER
 ENV PATH=$PATH:$PRESTO/bin
 
