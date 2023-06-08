@@ -33,8 +33,8 @@ RUN apt-get update && \
         liblzma-dev \
         libpng-dev \
         libtiff5-dev \
-        libwebkitgtk-3.0-dev \
-        libwxgtk3.0-dev \
+        libwebkitgtk-4.0-dev \
+        libwxgtk4.0-dev \
         nano \
         xfonts-base && \
     apt-get clean && \
