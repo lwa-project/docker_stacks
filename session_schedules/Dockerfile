@@ -33,7 +33,7 @@ RUN apt-get update && \
         liblzma-dev \
         libpng-dev \
         libtiff5-dev \
-        libwebkitgtk-3.0-dev \
+        libwebkit2gtk-4.0-dev \
         libwxgtk3.0-gtk3-dev \
         nano \
         xfonts-base && \
@@ -41,7 +41,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install xpra
-RUN echo "deb https://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list && \
+RUN echo "deb https://xpra.org/ focal main" > /etc/apt/sources.list.d/xpra.list && \
     curl https://xpra.org/gpg.asc | apt-key add - && \
     apt-get update && \
     apt-get install -yq --no-install-recommends \
