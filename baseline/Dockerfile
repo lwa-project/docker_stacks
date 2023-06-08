@@ -34,9 +34,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install difmap
-RUN wget ftp://ftp.astro.caltech.edu/pub/difmap/difmap2.5p.tar.gz && \
-    tar xzvf difmap2.5p.tar.gz && \
-    cd uvf_difmap_2.5p && \
+RUN wget ftp://ftp.astro.caltech.edu/pub/difmap/difmap2.5q.tar.gz && \
+    tar xzvf difmap2.5q.tar.gz && \
+    cd uvf_difmap_2.5q && \
     ./configure linux-ia64-gcc && \
     ./makeall && \
     cp difmap /usr/local/bin/ && \
