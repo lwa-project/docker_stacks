@@ -34,6 +34,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+WORKDIR $HOME
+
 # Install difmap
 RUN wget ftp://ftp.astro.caltech.edu/pub/difmap/difmap2.5q.tar.gz && \
     tar xzvf difmap2.5q.tar.gz && \
@@ -41,10 +43,10 @@ RUN wget ftp://ftp.astro.caltech.edu/pub/difmap/difmap2.5q.tar.gz && \
     ./configure linux-ia64-gcc && \
     ./makeall && \
     cp difmap /usr/local/bin/ && \
+    cd $HOME && rm -rf difmap*.tar.gz uv_difmap_* && \
     fix-permissions $HOME
     
 USER $LSL_UID
-WORKDIR $HOME
 
 # Prepare to install AIPS
 RUN mkdir $HOME/aips && \
