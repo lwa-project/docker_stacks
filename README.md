@@ -4,10 +4,10 @@
 
 ## Images
 The available images are:
-- base:  LSL installed on Ubuntu 18.04 in a Python3.6 virtualenv.
+- base:  LSL installed on Ubuntu 20.04 in a Python3.8 virtualenv.
 - session_schedules:  *base* + the [LWA scheduling tools](https://github.com/lwa-project/session_schedules), plus firefox to submit schedules.
 - raw_data: *session_schedules* + the [LWA commissioning tools](https://github.com/lwa-project/commissioning) for working with raw LWA data.
-- pulsar:  *raw_data* + the [LWA pulsar tools](https://github.com/lwa-project/pulsar) for working pulsar data.  This also includes TEMPO, PRESTO, psrcat, psrchive, and dspsr.
+- pulsar:  *raw_data* + the [LWA pulsar tools](https://github.com/lwa-project/pulsar) for working pulsar data and the [LWA pulsar archive pipeline](https://github.com/lwa-project/pulsar_archive_pipeline))  This also includes TEMPO, PRESTO, psrcat, psrchive, and dspsr.
 - baseline:  *session_schedules* + AIPS and difmap for working with LWA Single Baseline Interferometer data.
 - jupyter:  *base* + a Jupyter notebook server based off [this image](https://github.com/jupyter/docker-stacks/tree/master/scipy-notebook).
 
