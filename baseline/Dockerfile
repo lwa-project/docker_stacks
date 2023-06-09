@@ -24,6 +24,7 @@ RUN apt-get update && \
         gfortran \
         gv \
         libncurses5-dev \
+        libtinfo5 \
         libx11-dev \
         libxext6 \
         perl \
@@ -59,7 +60,7 @@ COPY NETSP $HOME/aips/DA00/
 COPY TPHOSTS $HOME/aips/DA00/
 
 # Install AIPS
-RUN wget ftp://ftp.aoc.nrao.edu/pub/software/aips/31DEC21/install.pl && \
+RUN wget ftp://ftp.aoc.nrao.edu/pub/software/aips/31DEC23/install.pl && \
     echo -e "\n\n\n" | perl ./install.pl -n && \
     echo ". /home/lwa/aips/LOGIN.SH" >> $HOME/.bashrc && \
     echo "alias aips='aips tv=local:0'" >> $HOME/.bashrc
