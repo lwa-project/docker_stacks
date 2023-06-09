@@ -38,7 +38,7 @@ RUN apt-get update && \
         # ---- nbconvert dependencies ----
         texlive-xetex \
         texlive-fonts-recommended \
-        texlive-generic-recommended \
+        texlive-plain-generic \
         # Optional dependency
         texlive-fonts-extra \
         # ----
@@ -62,7 +62,8 @@ RUN pip install \
         jupyter_client \
         jupyter_bokeh \
         nbformat \
-        nbconvert && \
+        nbconvert \
+        notebook && \
     jupyter notebook --generate-config && \
     rm -rf /home/$LSL_USER/.cache/yarn && \
     fix-permissions /home/$LSL_USER
@@ -80,10 +81,22 @@ CMD ["start-notebook.sh"]
 # Copy local files as late as possible to avoid cache busting
 COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
 RUN chmod a+rx /usr/local/bin/start*.sh
-COPY jupyter_notebook_config.py /etc/jupyter/
+COPY jupyter_server_config.py /etc/jupyter/
 
 # Fix permissions on /etc/jupyter as root
 USER root
+
+# Legacy for Jupyter Notebook Server, see: [#1205](https://github.com/jupyter/docker-stacks/issues/1205)
+RUN sed -re "s/c.ServerApp/c.NotebookApp/g" \
+    /etc/jupyter/jupyter_server_config.py > /etc/jupyter/jupyter_notebook_config.py && \
+    fix-permissions /etc/jupyter/
+
+# HEALTHCHECK documentation: https://docs.docker.com/engine/reference/builder/#healthcheck
+# This healtcheck works well for `lab`, `notebook`, `nbclassic`, `server` and `retro` jupyter commands
+# https://github.com/jupyter/docker-stacks/issues/915#issuecomment-1068528799
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
+    CMD /etc/jupyter/docker_healthcheck.py || exit 1
+
 RUN fix-permissions /etc/jupyter/
 
 # Import matplotlib the first time to build the font cache.
