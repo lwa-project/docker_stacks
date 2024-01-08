@@ -1,21 +1,9 @@
-ARG BASE_CONTAINER=lwaproject/lsl:raw_data
-FROM $BASE_CONTAINER
+FROM lwaproject/lsl:raw_data
 
-LABEL maintainer="Jayce Dowell <jdowell@unm.edu>"
+LABEL maintainer="Sarah Chastain <sarahchastain1@unm.edu>"
 
-# Build-time metadata as defined at http://label-schema.org
-ARG BUILD_DATE
-ARG VCS_REF
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.name="LWA Software Library - pulsar image" \
-      org.label-schema.description="Image for working with scheduling and working with pulsar data from the LWA" \
-      org.label-schema.url="https://lwa.unm.edu" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/lwa-project/docker_stacks" \
-      org.label-schema.schema-version="1.0"
 
 USER root
-
 # Install all OS dependencies for fully functional notebook server
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
@@ -31,41 +19,35 @@ RUN apt-get update && \
         libc6-dev \
         libexpat1-dev \
         libgsl-dev \
-        libpng-dev \
         libtool \
         pgplot5 \
         swig \
         tcsh \
-        zlib1g-dev && \
+        zlib1g-dev \
+        libpng-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV PGPLOT_DIR=/usr/lib/pgplot5
+
+ENV PSRHOME=/opt/lwa/Pulsar
+ENV PATH=${PATH}:$PSRHOME/bin
+
+ENV TEMPO2=/usr/local/lib
+ENV PSRCAT_FILE=$PSRHOME/psrcat/psrcat.db
+
+ENV PGPLOT_DIR=$PSRHOME/pgplot5
 ENV PGPLOT_FONT=$PGPLOT_DIR/grfont.dat
 
-# Setup EPSIC
-RUN cd /home/$LSL_USER && \
-    git clone https://github.com/straten/epsic.git && \
-    cd epsic && \
-    cd src && ./bootstrap && ./configure --enable-shared && \
-    make && make install && \
-    cd $HOME && rm -rf epsic && \
-    fix-permissions /home/$LSL_USER
+RUN mkdir -p /opt/lwa/Pulsar
 
-# Setup PSRCHIVE
-COPY ac_python_devel.m4 /home/$LSL_USER
-COPY python.m4 /home/$LSL_USER
-RUN cd /home/$LSL_USER && \
+    # install TEMPO2
+USER root
+RUN cd /opt/lwa/Pulsar && \
     git clone https://git.code.sf.net/p/psrchive/code psrchive && \
     cd psrchive && \
-    mv /home/$LSL_USER/ac_python_devel.m4 config/ && \
-    mv /home/$LSL_USER/python.m4 config/ && \
-    ./bootstrap && ./configure  --enable-shared && \
-    make -j10 && make install && \
-    cd $HOME && rm -rf psrchive  \
-    fix-permissions /home/$LSL_USER
+    ./bootstrap && \
+    ./configure  && \
+    make -j10 && \ 
+    make install 
 
-
-# Done
-WORKDIR $HOME/pulsar
 ENTRYPOINT ["/bin/bash", "-i"]
