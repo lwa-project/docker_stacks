@@ -1,0 +1,210 @@
+Bootstrap: docker
+From: ubuntu:22.04
+# IncludeCmd: yes # Use the CMD as runscript instead of ENTRYPOINT
+
+%pre
+
+%post
+    export TZ=Etc/UTC
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install --no-install-recommends -y automake \
+        autoconf \
+        build-essential \
+        curl \
+        dirmngr \
+        evince \
+        fuse3 \
+        g++ \
+        gfortran \
+        git \
+        gpg-agent \
+        gv \
+        libboost-python-dev \
+        libc6-dev \
+        libcfitsio-dev \
+        libexpat1-dev \
+        libfftw3-dev \
+        libgdbm-dev \
+        libgsl-dev \
+        libgtk-3-dev \
+        libhdf5-dev \
+        libtool \
+        locales \
+        pgplot5 \
+        pkg-config \
+        python-dev-is-python3 \
+        python-is-python3 \
+        python3-bottleneck \
+        python3-dev \
+        python3-h5py \
+        python3-healpy \
+        python3-importlib-metadata \
+        python3-matplotlib \
+        python3-numpy \
+        python3-pip \
+        python3-scipy \
+        python3-setuptools \
+        python3-wxgtk4.0 \
+        saods9 \
+        software-properties-common \
+        sudo \
+        swig \
+        tcsh \
+        vim \
+        wget  \
+        zlib1g-dev
+    apt-get clean
+    
+    export PGPLOT_DIR=/usr/lib/pgplot5
+    export PGPLOT_FONT=$PGPLOT_DIR/grfont.dat
+    # Install CUDA 12.3
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+    mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    wget https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-ubuntu2204-12-3-local_12.3.2-545.23.08-1_amd64.deb
+    dpkg -i cuda-repo-ubuntu2204-12-3-local_12.3.2-545.23.08-1_amd64.deb
+    cp /var/cuda-repo-ubuntu2204-12-3-local/cuda-*-keyring.gpg /usr/share/keyrings/
+    apt-get update
+    apt-get -y install cuda-toolkit-12-3
+    # Install TEMPO
+    mkdir -p /opt/tempo
+    cd /opt
+    git clone https://git.code.sf.net/p/tempo/tempo && \
+    cd tempo && \
+    ./prepare && ./configure && \
+    make -j10 && make install 
+
+    # PRESTO
+    export PRESTO=/opt/presto
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PRESTO/lib
+    cd /opt
+    git clone https://github.com/scottransom/presto.git
+    cd presto
+    git checkout v4.0
+    cd src
+    make prep
+    CFLAGS=-I. make
+    cd $PRESTO
+    pip install .
+    
+    # Install psrchive
+    mkdir -p /opt/Pulsar
+    cd /opt/Pulsar
+    git clone https://git.code.sf.net/p/psrchive/code psrchive
+    cd psrchive 
+    cp /ac_python_devel.m4 config
+    cp /python.m4 config
+    ./bootstrap
+    ./configure
+    make -j10
+    make install 
+    
+    
+    
+    # setup DSPSR
+    cd /opt
+    git clone https://git.code.sf.net/p/dspsr/code dspsr && \
+    cd dspsr && \
+    cp /backends.list . && \
+    cp /python.m4 config/ && \
+    ./bootstrap && ./configure  && \
+    make && make install
+    
+    # psrfits_utils
+    cd /opt
+    git clone https://github.com/lwa-project/psrfits_utils.git
+    cd psrfits_utils
+    cp /python.m4 config
+    ./prepare
+    ./configure
+    make 
+    make install
+    mv /usr/local/local/lib/python3.10/dist-packages/psrfits_utils /usr/local/lib/python3.10/dist-packages/
+    ldconfig 
+
+    # Need these python packages
+    pip install \
+        pyephem==3.7.6.0 \
+        pytz \
+        && \
+    pip install aipy && \
+    pip install lsl
+
+    # session_schedules
+    cd /opt
+    git clone https://github.com/lwa-project/session_schedules.git
+
+    # commissioning for plotHDF.py and others
+    cd /opt
+    git clone https://github.com/lwa-project/commissioning.git
+    
+    # LWA pulsar tools
+    cd /opt
+    git clone https://github.com/lwa-project/pulsar.git
+    cd pulsar
+    make
+
+    # install carta
+    cd /opt
+    wget https://github.com/CARTAvis/carta/releases/latest/download/carta.AppImage.$(arch).tgz
+    tar -xzf carta.AppImage.$(arch).tgz
+    rm -rf *tgz
+
+    
+    # Download pulsar_archive_pipeline
+    cd /opt
+    git clone https://github.com/lwa-project/pulsar_archive_pipeline.git
+    
+    cd /opt
+    git clone https://github.com/lwa-project/orville_wideband_imager.git
+
+
+%files
+    ../pulsar/backends.list / 
+    ../pulsar/python.m4 / 
+    ../pulsar/ac_python_devel.m4 /
+
+%environment
+    alias carta="APPIMAGE_EXTRACT_AND_RUN=1 /opt/carta-4.0-x86_64.AppImage --no_browser"
+
+
+    export PATH=$PATH:/opt/orville_wideband_imager/scripts
+    export PATH=$PATH:/opt/pulsar
+    export PATH=$PATH:/opt/psrfits_utils
+    export PATH=$PATH:/opt/session_schedules
+
+    export PATH=$PATH:/opt/commissioning
+    export PATH=$PATH:/opt/commissioning/COR
+    export PATH=$PATH:/opt/commissioning/DRX
+    export PATH=$PATH:/opt/commissioning/DRX/Fringing
+    export PATH=$PATH:/opt/commissioning/DRX/HDF5
+    export PATH=$PATH:/opt/commissioning/TBF
+    export PATH=$PATH:/opt/commissioning/TBN
+    export PATH=$PATH:/opt/commissioning/TBW
+
+    export TZ=Etc/UTC
+    export DEBIAN_FRONTEND=noninteractive
+
+    export PRESTO=/opt/presto
+    export PATH=$PATH:$PRESTO/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PRESTO/lib
+
+    export PSRHOME=/opt/Pulsar
+    export PATH=${PATH}:$PSRHOME/bin
+    
+    export PGPLOT_DIR=/usr/lib/pgplot5
+    export PGPLOT_FONT=$PGPLOT_DIR/grfont.dat
+    
+    export TEMPO=/opt/tempo
+    export PSRCAT_FILE=$PSRHOME/psrcat/psrcat.db
+%test
+    exit 0
+
+%runscript
+
+%startscript
+
+%labels
+
+%help
+    This is a text file to be displayed with the run-help command.
